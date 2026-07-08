@@ -4,12 +4,10 @@ import { useState } from "react";
 import Papa, { ParseResult } from "papaparse";
 import axios from "axios";
 
-type RowData = Record<string, string>;
-
 export default function UploadBox() {
   const [fileName, setFileName] = useState("");
-  const [data, setData] = useState<RowData[]>([]);
-  const [mappedData, setMappedData] = useState<RowData[]>([]);
+  const [data, setData] = useState<any[]>([]);
+  const [mappedData, setMappedData] = useState<any[]>([]);
   const [message, setMessage] = useState("");
 
   const handleFileChange = (
@@ -23,10 +21,10 @@ export default function UploadBox() {
     setMappedData([]);
     setMessage("");
 
-    Papa.parse<RowData>(file, {
+    Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (result: ParseResult<RowData>) => {
+      complete: (result: ParseResult<any>) => {
         setData(result.data);
       },
     });
@@ -44,7 +42,7 @@ export default function UploadBox() {
         .replace("```", "")
         .trim();
 
-      const parsedData: RowData[] = JSON.parse(cleanData);
+      const parsedData = JSON.parse(cleanData);
 
       setMappedData(parsedData);
       setMessage("Data imported successfully");
@@ -93,7 +91,7 @@ export default function UploadBox() {
               <tbody>
                 {data.map((row, index) => (
                   <tr key={index}>
-                    {Object.values(row).map((value, i) => (
+                    {Object.values(row).map((value: any, i) => (
                       <td
                         key={i}
                         className="border border-gray-300 p-2"
@@ -156,7 +154,7 @@ export default function UploadBox() {
               <tbody>
                 {mappedData.map((row, index) => (
                   <tr key={index}>
-                    {Object.values(row).map((value, i) => (
+                    {Object.values(row).map((value: any, i) => (
                       <td
                         key={i}
                         className="border border-gray-300 p-2"
