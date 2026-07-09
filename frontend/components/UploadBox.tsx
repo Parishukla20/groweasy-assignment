@@ -33,7 +33,7 @@ export default function UploadBox() {
   const handleImport = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/upload",
+        "https://groweasy-backend-ns2t.onrender.com/upload",
         data
       );
 
