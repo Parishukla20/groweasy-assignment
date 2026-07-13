@@ -9,6 +9,7 @@ export default function UploadBox() {
   const [data, setData] = useState<any[]>([]);
   const [mappedData, setMappedData] = useState<any[]>([]);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -31,6 +32,8 @@ export default function UploadBox() {
   };
 
   const handleImport = async () => {
+    setLoading(true);
+    setMessage("");
     try {
       const response = await axios.post(
         "https://groweasy-backend-ns2t.onrender.com/upload",
@@ -49,6 +52,9 @@ export default function UploadBox() {
     } catch (error) {
       console.error(error);
       setMessage("Error sending data");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -118,6 +124,18 @@ export default function UploadBox() {
         <p className="mt-4 text-green-600 font-semibold">
           {message}
         </p>
+      )}
+
+      {loading && (
+        <div className="mt-8">
+          <p className="text-lg font-semibold text-blue-600">
+            Processing CSV...
+          </p>
+
+          <p className="text-gray-500">
+            Please wait while AI maps your records.
+          </p>
+        </div>
       )}
 
       {mappedData.length > 0 && (
