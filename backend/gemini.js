@@ -1,23 +1,36 @@
 const { GoogleGenAI } = require("@google/genai");
-console.log(process.env.GEMINI_API_KEY);
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
 async function mapFields(csvData) {
   const prompt = `
-You are a CRM field mapping assistant.
+Convert the following CSV records into GrowEasy CRM format.
 
 CSV Data:
 ${JSON.stringify(csvData)}
 
-Return JSON only.
-Map the fields to:
-firstName
-lastName
-email
-phone
-company
+Return only valid JSON as an array.
+
+Fields:
+- created_at
+- name
+- email
+- country_code
+- mobile_without_country_code
+- company
+- city
+- state
+- country
+- lead_owner
+- crm_status
+- crm_note
+- data_source
+- possession_time
+- description
+
+If any field is not available, return an empty string.
 `;
 
   const response = await ai.models.generateContent({
@@ -25,7 +38,10 @@ company
     contents: prompt,
   });
 
-  return response.text;
+  return response.text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
 }
 
 module.exports = { mapFields };
